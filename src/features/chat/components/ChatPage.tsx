@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
+  ActionIcon,
+  Affix,
   Box,
   Button,
   Divider,
+  Drawer,
   Flex,
   Group,
   Loader,
@@ -17,9 +20,9 @@ import {
   Title,
   Grid,
 } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { IconMessageCircle, IconPlus, IconUser } from '@tabler/icons-react'
+import { IconMessageCircle, IconPlus, IconSettings, IconUser } from '@tabler/icons-react'
 
 import { MessageComposer } from '@features/chat/components/MessageComposer'
 import { MessageList } from '@features/chat/components/MessageList'
@@ -46,6 +49,9 @@ export const ChatPage = () => {
   const [isCreateModalOpen, { open: openCreateModal, close: closeCreateModal }] =
     useDisclosure(false)
   const [newChatroomName, setNewChatroomName] = useState('')
+  const isMobile = useMediaQuery('(max-width: 48em)') ?? false
+  const [isSettingsDrawerOpen, { open: openSettingsDrawer, close: closeSettingsDrawer }] =
+    useDisclosure(false)
 
   useEffect(() => {
     if (chatrooms.length === 0) {
@@ -138,13 +144,98 @@ export const ChatPage = () => {
     }
   }, [closeCreateModal, createChatroom, newChatroomName])
 
+  useEffect(() => {
+    if (!isMobile && isSettingsDrawerOpen) {
+      closeSettingsDrawer()
+    }
+  }, [closeSettingsDrawer, isMobile, isSettingsDrawerOpen])
+  const sidebarPanel = (
+    <Paper
+      className="chat-panel chat-panel--sidebar"
+      radius="xl"
+      shadow="xl"
+      p={{ base: 'md', md: 'xl' }}
+      withBorder
+      style={{
+        backdropFilter: 'blur(12px)',
+        background: 'rgba(8, 15, 32, 0.82)',
+        border: '1px solid rgba(148, 163, 184, 0.15)',
+        width: '100%',
+      }}
+    >
+      <Stack gap="lg">
+        <Stack gap={4}>
+          <Text
+            size="xs"
+            c="dimmed"
+            fw={600}
+            tt="uppercase"
+            style={{ letterSpacing: '0.6px' }}
+          >
+            Chatroom
+          </Text>
+          <Select
+            data={chatroomOptions}
+            value={activeChatroomId ? String(activeChatroomId) : null}
+            onChange={(value) => {
+              setActiveChatroomId(value ? Number(value) : null)
+              if (isMobile) {
+                closeSettingsDrawer()
+              }
+            }}
+            placeholder="Choose a chatroom"
+            searchable
+            nothingFoundMessage={isLoadingChatrooms ? 'Loading...' : 'No chatrooms yet'}
+            size="md"
+          />
+          <Button
+            fullWidth
+            leftSection={<IconPlus size={16} />}
+            variant="gradient"
+            gradient={{ from: 'violet', to: 'cyan' }}
+            onClick={openCreateModal}
+          >
+            New chatroom
+          </Button>
+        </Stack>
+        <Divider label="Profile" labelPosition="center" />
+        <Stack gap="xs">
+          <Text size="sm" c="dimmed">
+            Display name
+          </Text>
+          <TextInput
+            value={identity.userName}
+            onChange={(event) => handleIdentityNameChange(event.currentTarget.value)}
+            leftSection={<IconUser size={16} />}
+            aria-label="Display name"
+            size="md"
+            placeholder="How should we call you?"
+          />
+          <Text size="xs" c="dimmed">
+            Your name is shared with other participants in this chatroom.
+          </Text>
+        </Stack>
+        <Divider label="Status" labelPosition="center" />
+        <Stack gap="xs">
+          <Text size="sm" c="dimmed">
+            Messages will appear instantly when connected.
+          </Text>
+          <Text size="xs" c="dimmed">
+            Rooms available: {chatrooms.length ?? 0}
+          </Text>
+        </Stack>
+      </Stack>
+    </Paper>
+  )
+
   return (
     <Box
       className="app-shell"
       bg="transparent"
       miw="100vw"
       mih="100vh"
-      py={{ base: 'lg', md: 48 }}
+      pt={{ base: 'lg', md: 48 }}
+      pb={isMobile ? 'sm' : 48}
       px={{ base: 'md', md: '5vw' }}
     >
       <Stack gap="md">
@@ -161,91 +252,14 @@ export const ChatPage = () => {
             <div>
               <Title order={2}>Free Chat</Title>
               <Text size="sm" c="dimmed">
-                Beautiful realtime messaging powered by Action Cable.
+                Beautiful realtime messaging.
               </Text>
             </div>
           </Group>
         </Group>
 
         <Grid gutter={{ base: 'md', md: 'xl' }}>
-          <Grid.Col span={{ base: 12, lg: 4 }}>
-            <Paper
-              className="chat-panel chat-panel--sidebar"
-              radius="xl"
-              shadow="xl"
-              p={{ base: 'md', md: 'xl' }}
-              withBorder
-              style={{
-                backdropFilter: 'blur(12px)',
-                background: 'rgba(8, 15, 32, 0.82)',
-                border: '1px solid rgba(148, 163, 184, 0.15)',
-              }}
-            >
-              <Stack gap="lg">
-                <Stack gap={4}>
-                  <Text
-                    size="xs"
-                    c="dimmed"
-                    fw={600}
-                    tt="uppercase"
-                    style={{ letterSpacing: '0.6px' }}
-                  >
-                    Chatroom
-                  </Text>
-                  <Select
-                    data={chatroomOptions}
-                    value={activeChatroomId ? String(activeChatroomId) : null}
-                    onChange={(value) =>
-                      setActiveChatroomId(value ? Number(value) : null)
-                    }
-                    placeholder="Choose a chatroom"
-                    searchable
-                    nothingFoundMessage={
-                      isLoadingChatrooms ? 'Loading�' : 'No chatrooms yet'
-                    }
-                    size="md"
-                  />
-                  <Button
-                    fullWidth
-                    leftSection={<IconPlus size={16} />}
-                    variant="gradient"
-                    gradient={{ from: 'violet', to: 'cyan' }}
-                    onClick={openCreateModal}
-                  >
-                    New chatroom
-                  </Button>
-                </Stack>
-                <Divider label="Profile" labelPosition="center" />
-                <Stack gap="xs">
-                  <Text size="sm" c="dimmed">
-                    Display name
-                  </Text>
-                  <TextInput
-                    value={identity.userName}
-                    onChange={(event) =>
-                      handleIdentityNameChange(event.currentTarget.value)
-                    }
-                    leftSection={<IconUser size={16} />}
-                    aria-label="Display name"
-                    size="md"
-                    placeholder="How should we call you?"
-                  />
-                  <Text size="xs" c="dimmed">
-                    Your name is shared with other participants in this chatroom.
-                  </Text>
-                </Stack>
-                <Divider label="Status" labelPosition="center" />
-                <Stack gap="xs">
-                  <Text size="sm" c="dimmed">
-                    Messages will appear instantly when connected.
-                  </Text>
-                  <Text size="xs" c="dimmed">
-                    Rooms available: {chatrooms.length ?? 0}
-                  </Text>
-                </Stack>
-              </Stack>
-            </Paper>
-          </Grid.Col>
+          {!isMobile && <Grid.Col span={{ base: 12, lg: 4 }}>{sidebarPanel}</Grid.Col>}
 
           <Grid.Col span={{ base: 12, lg: 8 }}>
             <Paper
@@ -256,7 +270,9 @@ export const ChatPage = () => {
               p={{ base: 'sm', md: 'lg' }}
               bg="rgba(8, 15, 32, 0.55)"
               style={{
-                minHeight: '65vh',
+                minHeight: isMobile ? 'calc(90vh - 120px)' : '65vh',
+                height: isMobile ? 'calc(100vh - 140px)' : '70vh',
+                maxHeight: isMobile ? 'calc(100vh - 80px)' : '75vh',
                 backdropFilter: 'blur(18px)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -326,6 +342,42 @@ export const ChatPage = () => {
             </Paper>
           </Grid.Col>
         </Grid>
+
+        {isMobile && (
+          <>
+            <Affix position={{ top: 16, right: 16 }}>
+              <ActionIcon
+                size="xl"
+                radius="xl"
+                variant="gradient"
+                gradient={{ from: 'violet', to: 'cyan' }}
+                className="chat-settings-fab"
+                onClick={openSettingsDrawer}
+                aria-label="Open chat settings"
+              >
+                <IconSettings size={22} />
+              </ActionIcon>
+            </Affix>
+
+            <Drawer
+              opened={isSettingsDrawerOpen}
+              onClose={closeSettingsDrawer}
+              title="Chat settings"
+              position="bottom"
+              size="auto"
+              padding="lg"
+              radius="xl"
+              overlayProps={{ opacity: 0.55, blur: 8 }}
+              classNames={{
+                content: 'chat-settings-drawer',
+                body: 'chat-settings-drawer__body',
+                header: 'chat-settings-drawer__header',
+              }}
+            >
+              <Stack gap="lg">{sidebarPanel}</Stack>
+            </Drawer>
+          </>
+        )}
       </Stack>
 
       <Modal

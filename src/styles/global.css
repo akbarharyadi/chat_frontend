@@ -51,28 +51,43 @@ body {
   flex: 1;
   min-height: 0;
   padding: 1rem 1.5rem;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.message-area__body::-webkit-scrollbar {
-  width: 6px;
+.message-area__composer {
+  padding: 1rem 1.5rem 1.5rem;
 }
 
-.message-area__body::-webkit-scrollbar-thumb {
-  background-color: rgba(148, 163, 184, 0.4);
+.message-list__scrollbar {
+  opacity: 1 !important;
+}
+
+.message-list__scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.45);
   border-radius: 999px;
 }
 
-.message-area__body::-webkit-scrollbar-track {
-  background: transparent;
+.chat-settings-fab {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
-.message-area__composer {
-  padding: 1rem 1.5rem 1.5rem;
+.chat-settings-drawer {
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(20px);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.chat-settings-drawer__header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.chat-settings-drawer__body {
+  padding: 0;
 }
 
 @media (max-width: 40em) {

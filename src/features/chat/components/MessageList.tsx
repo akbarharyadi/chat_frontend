@@ -70,9 +70,14 @@ export const MessageList = ({
   return (
     <ScrollArea
       viewportRef={viewportRef}
-      type="never"
-      style={{ flex: 1, minHeight: 0 }}
+      type="auto"
+      scrollbarSize={8}
       offsetScrollbars
+      classNames={{
+        scrollbar: 'message-list__scrollbar',
+        thumb: 'message-list__scrollbar-thumb',
+      }}
+      style={{ flex: 1, minHeight: 0 }}
     >
       <Flex direction="column" justify="flex-end" style={{ minHeight: '100%' }}>
         <Stack p="md" gap="md">
