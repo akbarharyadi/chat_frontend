@@ -20,7 +20,19 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@components/*": ["src/components/*"],
+      "@features/*": ["src/features/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@lib/*": ["src/lib/*"],
+      "@services/*": ["src/services/*"],
+      "@styles/*": ["src/styles/*"],
+      "@tests/*": ["src/tests/*"],
+      "@types/*": ["src/types/*"]
+    }
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "eslint.config.js", "prettier.config.cjs"]
 }
