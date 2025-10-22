@@ -26,3 +26,4 @@ dist-ssr
 # Project planning artifacts
 plan/
 frontend_integration.md
+.env

@@ -1,21 +1,10 @@
-import { AppShell, Container, Stack, Text, Title } from '@mantine/core'
+import { ChatPage } from '@features/chat/components/ChatPage'
 
+/**
+ * Root application component that renders the chat experience.
+ */
 export function App() {
-  return (
-    <AppShell padding="md">
-      <AppShell.Main>
-        <Container size="md" py="xl">
-          <Stack gap="md" align="center">
-            <Title order={2}>Free Chat</Title>
-            <Text c="dimmed">
-              Chat experience is coming together. Next steps wire up chatroom and realtime
-              messaging.
-            </Text>
-          </Stack>
-        </Container>
-      </AppShell.Main>
-    </AppShell>
-  )
+  return <ChatPage />
 }
 
 export default App

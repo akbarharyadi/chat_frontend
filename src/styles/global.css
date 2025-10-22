@@ -1,0 +1,108 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.14), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.2), transparent 55%),
+    linear-gradient(180deg, rgba(30, 41, 59, 1) 0%, rgba(15, 23, 42, 1) 100%);
+  background-attachment: fixed;
+}
+
+.mantine-Paper-root.chat-panel {
+  border-radius: 28px;
+}
+
+.mantine-InputWrapper-label {
+  font-weight: 600;
+}
+
+.chat-panel--sidebar {
+  backdrop-filter: blur(14px);
+}
+
+.chat-panel--messages {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.78) 0%,
+    rgba(30, 41, 59, 0.78) 100%
+  );
+  backdrop-filter: blur(18px);
+}
+
+.app-shell {
+  width: min(1200px, 92vw);
+  margin-inline: auto;
+}
+
+.message-area__header {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.message-area__body {
+  flex: 1;
+  min-height: 0;
+  padding: 1rem 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-area__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.message-area__body::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.4);
+  border-radius: 999px;
+}
+
+.message-area__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.message-area__composer {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+@media (max-width: 40em) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .chat-panel {
+    border-radius: 20px;
+  }
+
+  .chat-panel--messages {
+    padding: 0.75rem;
+  }
+
+  .chat-panel--sidebar {
+    padding: 1rem;
+  }
+
+  .app-shell {
+    width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .message-area__body {
+    padding: 0.75rem;
+  }
+
+  .message-area__composer {
+    padding: 0.75rem;
+  }
+}
