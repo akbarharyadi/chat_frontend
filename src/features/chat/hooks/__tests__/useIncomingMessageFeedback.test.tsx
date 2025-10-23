@@ -99,11 +99,16 @@ describe('useIncomingMessageFeedback', () => {
 
   afterEach(() => {
     if (originalVibrate === undefined) {
-      delete (navigator as Navigator & { vibrate?: unknown }).vibrate
+      Object.defineProperty(navigator, 'vibrate', {
+        configurable: true,
+        value: undefined,
+        writable: true,
+      })
     } else {
       Object.defineProperty(navigator, 'vibrate', {
         configurable: true,
         value: originalVibrate,
+        writable: true,
       })
     }
 
@@ -141,13 +146,16 @@ describe('useIncomingMessageFeedback', () => {
       body: 'my text',
     })
 
-    const { rerender } = renderHook((props) => useIncomingMessageFeedback(props), {
-      initialProps: {
-        messages: [],
-        activeChatroomId: 7,
-        currentUserUid: 'current-user',
+    const { rerender } = renderHook(
+      (props: UseIncomingMessageFeedbackOptions) => useIncomingMessageFeedback(props),
+      {
+        initialProps: {
+          messages: [],
+          activeChatroomId: 7,
+          currentUserUid: 'current-user',
+        },
       },
-    })
+    )
 
     rerender({
       messages: [initialMessage],
@@ -192,13 +200,16 @@ describe('useIncomingMessageFeedback', () => {
     const roomBFirst = createMessage({ id: 'b-1', chatroomId: 9, userUid: 'other-3' })
     const roomBSecond = createMessage({ id: 'b-2', chatroomId: 9, userUid: 'other-4' })
 
-    const { rerender } = renderHook((props) => useIncomingMessageFeedback(props), {
-      initialProps: {
-        messages: [],
-        activeChatroomId: 2,
-        currentUserUid: 'me',
+    const { rerender } = renderHook(
+      (props: UseIncomingMessageFeedbackOptions) => useIncomingMessageFeedback(props),
+      {
+        initialProps: {
+          messages: [],
+          activeChatroomId: 2,
+          currentUserUid: 'me',
+        },
       },
-    })
+    )
 
     rerender({
       messages: [roomAFirst],
