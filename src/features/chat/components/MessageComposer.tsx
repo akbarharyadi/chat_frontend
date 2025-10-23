@@ -1,7 +1,22 @@
-import { useCallback, useState, type KeyboardEvent, type FormEvent } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type KeyboardEvent,
+  type FormEvent,
+} from 'react'
 
-import { ActionIcon, Button, Group, Paper, Textarea, Tooltip } from '@mantine/core'
-import { useMediaQuery } from '@mantine/hooks'
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Paper,
+  Popover,
+  SimpleGrid,
+  Textarea,
+  Tooltip,
+} from '@mantine/core'
+import { useMediaQuery, useDisclosure } from '@mantine/hooks'
 import { IconMoodSmile, IconSend } from '@tabler/icons-react'
 
 export interface MessageComposerProps {
@@ -9,6 +24,24 @@ export interface MessageComposerProps {
   isSending?: boolean
   disabled?: boolean
 }
+
+const EMOJI_OPTIONS = [
+  '😀',
+  '😁',
+  '😂',
+  '🤣',
+  '😊',
+  '😍',
+  '😘',
+  '😎',
+  '🤔',
+  '🙌',
+  '👍',
+  '🎉',
+  '🔥',
+  '🙏',
+  '💡',
+]
 
 /**
  * Chat input allowing users to draft multi-line content and submit via button or Enter key.
@@ -25,6 +58,8 @@ export const MessageComposer = ({
 }: MessageComposerProps) => {
   const [value, setValue] = useState('')
   const isMobile = useMediaQuery('(max-width: 40em)')
+  const [isEmojiOpen, { toggle: toggleEmojiPicker, close: closeEmojiPicker }] =
+    useDisclosure(false)
 
   // Submit the draft message and optimistically clear the input.
   const handleSubmit = useCallback(
@@ -56,6 +91,20 @@ export const MessageComposer = ({
     [handleSubmit],
   )
 
+  const handleEmojiSelect = useCallback(
+    (emoji: string) => {
+      setValue((current) => `${current}${emoji}`)
+      closeEmojiPicker()
+    },
+    [closeEmojiPicker],
+  )
+
+  useEffect(() => {
+    if (disabled) {
+      closeEmojiPicker()
+    }
+  }, [disabled, closeEmojiPicker])
+
   return (
     <Paper
       component="form"
@@ -71,18 +120,50 @@ export const MessageComposer = ({
         wrap="wrap"
         justify={isMobile ? 'space-between' : 'flex-start'}
       >
-        <Tooltip label="Emoji picker coming soon">
-          <ActionIcon
-            size={isMobile ? 'md' : 'lg'}
-            radius="xl"
-            variant="subtle"
-            color="gray"
-            aria-label="Open emoji picker"
-            disabled
-          >
-            <IconMoodSmile size={20} />
-          </ActionIcon>
-        </Tooltip>
+        <Popover
+          opened={isEmojiOpen}
+          onClose={closeEmojiPicker}
+          position="top-start"
+          withArrow
+          shadow="xl"
+          withinPortal
+        >
+          <Popover.Target>
+            <Tooltip label="Insert emoji" disabled={isEmojiOpen}>
+              <ActionIcon
+                size={isMobile ? 'md' : 'lg'}
+                radius="xl"
+                variant="subtle"
+                color="gray"
+                aria-label="Open emoji picker"
+                aria-expanded={isEmojiOpen}
+                disabled={disabled}
+                onClick={() => {
+                  if (!disabled) {
+                    toggleEmojiPicker()
+                  }
+                }}
+              >
+                <IconMoodSmile size={20} />
+              </ActionIcon>
+            </Tooltip>
+          </Popover.Target>
+          <Popover.Dropdown p="xs">
+            <SimpleGrid cols={4} spacing="xs">
+              {EMOJI_OPTIONS.map((emoji) => (
+                <ActionIcon
+                  key={emoji}
+                  variant="subtle"
+                  radius="md"
+                  onClick={() => handleEmojiSelect(emoji)}
+                  aria-label={`Insert emoji ${emoji}`}
+                >
+                  <span style={{ fontSize: 20, lineHeight: 1 }}>{emoji}</span>
+                </ActionIcon>
+              ))}
+            </SimpleGrid>
+          </Popover.Dropdown>
+        </Popover>
 
         <Textarea
           value={value}

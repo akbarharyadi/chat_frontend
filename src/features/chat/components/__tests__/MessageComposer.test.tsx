@@ -54,4 +54,17 @@ describe('MessageComposer', () => {
 
     consoleErrorSpy.mockRestore()
   })
+
+  it('inserts emojis into the draft when selected from the picker', async () => {
+    const handleSend = vi.fn().mockResolvedValue(undefined)
+    const user = userEvent.setup()
+
+    renderWithProviders(<MessageComposer onSend={handleSend} />)
+
+    await user.click(screen.getByRole('button', { name: /open emoji picker/i }))
+    const emojiButton = await screen.findByRole('button', { name: 'Insert emoji 😀' })
+    await user.click(emojiButton)
+
+    expect(screen.getByLabelText('Message body')).toHaveValue('😀')
+  })
 })
