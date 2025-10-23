@@ -56,12 +56,13 @@ const playNotificationTone = async () => {
     oscillator.connect(gainNode)
     gainNode.connect(audioContext.destination)
 
-    oscillator.start()
-    oscillator.stop(audioContext.currentTime + 0.35)
     oscillator.onended = () => {
       oscillator.disconnect()
       gainNode.disconnect()
     }
+
+    oscillator.start()
+    oscillator.stop(audioContext.currentTime + 0.35)
   } catch {
     // Browsers may block autoplay until the user interacts with the page.
     return
