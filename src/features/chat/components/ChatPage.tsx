@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Box, Group, Stack, Text, ThemeIcon, Title, Grid } from '@mantine/core'
+import { Box, Stack, Grid } from '@mantine/core'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { IconMessageCircle } from '@tabler/icons-react'
 
 import { ChatCreateModal } from '@features/chat/components/ChatCreateModal'
+import { ChatHeader } from '@features/chat/components/ChatHeader'
 import { ChatMessagesPanel } from '@features/chat/components/ChatMessagesPanel'
 import { ChatMobileSettingsDrawer } from '@features/chat/components/ChatMobileSettingsDrawer'
 import { ChatSidebarPanel } from '@features/chat/components/ChatSidebarPanel'
 import { useChatRoom } from '@features/chat/hooks/useChatRoom'
 import { useChatrooms } from '@features/chat/hooks/useChatrooms'
+import { useIncomingMessageFeedback } from '@features/chat/hooks/useIncomingMessageFeedback'
 import type { ChatMessage, Chatroom } from '@features/chat/types'
 import { getStoredIdentity, setStoredIdentity } from '@lib/userIdentity'
 
@@ -171,6 +172,13 @@ export const ChatPage = () => {
     }
   }, [closeSettingsDrawer, isMobile, isSettingsDrawerOpen])
 
+  // Surface feedback for messages authored by other participants.
+  useIncomingMessageFeedback({
+    messages,
+    activeChatroomId,
+    currentUserUid: identity.userUid,
+  })
+
   return (
     <Box
       className="app-shell"
@@ -182,27 +190,7 @@ export const ChatPage = () => {
       px={{ base: 'md', md: '5vw' }}
     >
       <Stack gap="md">
-        <Group justify="space-between" align="flex-start" gap="md" wrap="wrap">
-          <Group gap={12} align="flex-start">
-            <ThemeIcon
-              radius="lg"
-              size={46}
-              variant="gradient"
-              gradient={{ from: 'violet', to: 'cyan' }}
-            >
-              <IconMessageCircle size={26} />
-            </ThemeIcon>
-            <div>
-              <Title order={2}>Free Chat</Title>
-              <Text size="sm" c="dimmed">
-                Beautiful realtime messaging.
-              </Text>
-              <Text size="sm" c="dimmed">
-                Powered by React with Mantine and Ruby on Rails Action Cable.
-              </Text>
-            </div>
-          </Group>
-        </Group>
+        <ChatHeader />
 
         <Grid gutter={{ base: 'md', md: 'xl' }}>
           {!isMobile && (
