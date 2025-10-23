@@ -20,6 +20,23 @@ export default defineConfig({
       '@types': srcPath('types'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          mantine: [
+            '@mantine/core',
+            '@mantine/hooks',
+            '@mantine/notifications',
+            '@mantine/modals',
+          ],
+          query: ['@tanstack/react-query', '@tanstack/react-query-devtools'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 700,
+  },
   test: {
     globals: true,
     environment: 'jsdom',

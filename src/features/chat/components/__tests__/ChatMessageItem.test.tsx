@@ -24,7 +24,7 @@ describe('ChatMessageItem', () => {
     )
 
     expect(screen.getByText('Hello from Alice')).toBeInTheDocument()
-    expect(screen.getByText('AL')).toBeInTheDocument()
+    expect(screen.getByLabelText('Alice avatar')).toBeInTheDocument()
     const authorLabel = screen.getAllByText(/alice/i, { selector: 'p' })[0]
     expect(authorLabel).toBeInTheDocument()
   })

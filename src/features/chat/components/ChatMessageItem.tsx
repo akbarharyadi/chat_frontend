@@ -13,9 +13,10 @@ import {
   useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core'
-import { IconAlertTriangle, IconRotateClockwise } from '@tabler/icons-react'
+import { IconAlertTriangle, IconRotateClockwise, IconUser } from '@tabler/icons-react'
 
 import type { ChatMessage } from '@features/chat/types'
+import './ChatMessageItem.css'
 
 export interface ChatMessageItemProps {
   message: ChatMessage
@@ -69,7 +70,7 @@ export const ChatMessageItem = memo(
 
       if (isOwnMessage) {
         return {
-          background: `linear-gradient(135deg, ${theme.colors.violet[5]} 0%, ${theme.colors.cyan[4]} 100%)`,
+          background: `linear-gradient(135deg, ${theme.colors.indigo[5]} 0%, ${theme.colors.violet[5]} 100%)`,
           color: theme.white,
           border: 'none',
           shadow: theme.shadows.sm,
@@ -77,17 +78,20 @@ export const ChatMessageItem = memo(
       }
 
       return {
-        background: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
-        color: colorScheme === 'dark' ? theme.colors.gray[0] : theme.colors.dark[7],
-        border: `1px solid ${colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-        shadow: theme.shadows.xs,
+        background: colorScheme === 'dark' ? theme.colors.dark[4] : theme.white,
+        color: colorScheme === 'dark' ? theme.colors.gray[1] : theme.colors.dark[7],
+        border: `1px solid ${colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2]}`,
+        shadow:
+          colorScheme === 'dark'
+            ? theme.shadows.xs
+            : '0 10px 28px rgba(15, 23, 42, 0.06)',
       }
     }, [colorScheme, isOwnMessage, message.isSystem, theme])
 
     return (
       <Group
         wrap="nowrap"
-        align="flex-end"
+        align="flex-start"
         justify={alignment}
         gap="sm"
         className="chat-message-item"
@@ -96,31 +100,29 @@ export const ChatMessageItem = memo(
         {!isOwnMessage && !message.isSystem && (
           <Avatar
             radius="xl"
-            size={38}
+            size={52}
             variant="gradient"
-            gradient={{ from: 'violet', to: 'cyan', deg: 130 }}
+            gradient={{
+              from: theme.colors.violet[5],
+              to: theme.colors.cyan[4],
+              deg: 135,
+            }}
+            className="chat-message-avatar"
+            aria-label={`${message.userName} avatar`}
           >
-            {message.userName.slice(0, 2).toUpperCase()}
+            <IconUser size={24} stroke={1.5} className="chat-message-avatar__icon" />
           </Avatar>
         )}
 
         <Stack gap={4} maw="75%" align={isOwnMessage ? 'flex-end' : 'flex-start'}>
-          <Group gap={8} justify={alignment}>
-            {!isOwnMessage && !message.isSystem && (
-              <Text size="sm" fw={600} c="dimmed">
-                {message.userName}
-              </Text>
-            )}
-            <Text size="xs" c="dimmed">
-              {new Date(message.createdAt).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+          {!message.isSystem && (
+            <Text size="sm" fw={600} c="dimmed" className="chat-message-author">
+              {isOwnMessage ? 'You' : message.userName}
             </Text>
-          </Group>
+          )}
 
           <Paper
-            shadow={isOwnMessage ? 'none' : 'xs'}
+            shadow={isOwnMessage ? 'md' : 'xs'}
             radius={radius}
             px="md"
             py="sm"
@@ -140,6 +142,21 @@ export const ChatMessageItem = memo(
               ff="var(--mantine-font-family)"
             >
               {message.body}
+            </Text>
+
+            <Text
+              size="xs"
+              c={bubbleStyles.color}
+              style={{
+                opacity: 0.7,
+                marginTop: 8,
+                textAlign: isOwnMessage ? 'right' : 'left',
+              }}
+            >
+              {new Date(message.createdAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </Text>
           </Paper>
 
@@ -188,8 +205,15 @@ export const ChatMessageItem = memo(
         </Stack>
 
         {isOwnMessage && !message.isSystem && (
-          <Avatar radius="xl" size={38} color="primary">
-            {message.userName.slice(0, 2).toUpperCase()}
+          <Avatar
+            radius="xl"
+            size={52}
+            variant="gradient"
+            gradient={{ from: theme.colors.dark[4], to: theme.colors.dark[7], deg: 140 }}
+            className="chat-message-avatar"
+            aria-label={`${message.userName} avatar`}
+          >
+            <IconUser size={24} stroke={1.5} className="chat-message-avatar__icon" />
           </Avatar>
         )}
       </Group>
