@@ -23,6 +23,7 @@ export interface MessageComposerProps {
   onSend: (message: string) => Promise<void> | void
   isSending?: boolean
   disabled?: boolean
+  variant?: 'default' | 'mobile'
 }
 
 const EMOJI_OPTIONS = [
@@ -55,9 +56,11 @@ export const MessageComposer = ({
   onSend,
   isSending = false,
   disabled = false,
+  variant = 'default',
 }: MessageComposerProps) => {
   const [value, setValue] = useState('')
-  const isMobile = useMediaQuery('(max-width: 40em)')
+  const mediaQueryMatches = useMediaQuery('(max-width: 40em)')
+  const isMobile = variant === 'mobile' ? true : mediaQueryMatches
   const [isEmojiOpen, { toggle: toggleEmojiPicker, close: closeEmojiPicker }] =
     useDisclosure(false)
 
@@ -116,9 +119,15 @@ export const MessageComposer = ({
     >
       <Group
         align="flex-end"
-        gap="sm"
+        gap={variant === 'mobile' ? 'xs' : 'sm'}
         wrap="wrap"
-        justify={isMobile ? 'space-between' : 'flex-start'}
+        justify={
+          variant === 'mobile'
+            ? 'space-between'
+            : isMobile
+              ? 'space-between'
+              : 'flex-start'
+        }
       >
         <Popover
           opened={isEmojiOpen}
@@ -173,10 +182,14 @@ export const MessageComposer = ({
           autosize
           minRows={1}
           maxRows={4}
-          style={{ flex: 1, minWidth: isMobile ? '100%' : 0 }}
+          style={{
+            flex: 1,
+            minWidth: variant === 'mobile' || isMobile ? '100%' : 0,
+          }}
           radius="md"
           disabled={disabled}
           aria-label="Message body"
+          size={variant === 'mobile' ? 'sm' : 'md'}
         />
 
         <Button
@@ -185,8 +198,11 @@ export const MessageComposer = ({
           rightSection={<IconSend size={18} />}
           loading={isSending}
           disabled={disabled}
-          fullWidth={isMobile}
-          size={isMobile ? 'md' : 'sm'}
+          fullWidth={variant === 'mobile' || isMobile}
+          size={variant === 'mobile' ? 'md' : isMobile ? 'md' : 'sm'}
+          style={
+            variant === 'mobile' ? { paddingInline: '1.75rem', height: 48 } : undefined
+          }
         >
           Send
         </Button>

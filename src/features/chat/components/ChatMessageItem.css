@@ -31,3 +31,33 @@
 .chat-message-bubble:hover {
   transform: translateY(-1px);
 }
+
+@media (max-width: 40em) {
+  .chat-message-avatar {
+    --avatar-size: calc(2.6rem * var(--mantine-scale));
+    box-shadow: 0 12px 20px rgba(12, 39, 73, 0.18);
+  }
+
+  .chat-message-avatar__icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .chat-message-author {
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+  }
+
+  .chat-message-bubble {
+    padding-inline: var(--mantine-spacing-sm);
+    padding-block: calc(var(--mantine-spacing-xs) * 1.2);
+  }
+
+  .chat-message-bubble .mantine-Text-root[data-size='sm'] {
+    font-size: 0.9rem;
+  }
+
+  .chat-message-bubble .mantine-Text-root[data-size='xs'] {
+    font-size: 0.72rem;
+  }
+}

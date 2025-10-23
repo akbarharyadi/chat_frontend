@@ -133,6 +133,7 @@ export const ChatMessagesPanel = ({
               onSend={onSendMessage}
               isSending={isSending}
               disabled={isDisconnected}
+              variant={isMobile ? 'mobile' : 'default'}
             />
           </Box>
         </div>

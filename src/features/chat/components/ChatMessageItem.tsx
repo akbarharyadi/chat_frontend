@@ -128,7 +128,11 @@ export const ChatMessageItem = memo(
             className="chat-message-bubble"
           >
             <Text
-              style={{ whiteSpace: 'pre-wrap', lineHeight: 1.45 }}
+              style={{
+                whiteSpace: 'pre-wrap',
+                lineHeight: 1.45,
+                wordBreak: 'break-word',
+              }}
               size="sm"
               ff="var(--mantine-font-family)"
             >
