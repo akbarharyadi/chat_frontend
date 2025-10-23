@@ -3,16 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { chatApi } from '@services/chatApi'
 import type { http as HttpFn } from '@services/httpClient'
 
-type HttpMockFn = (...args: Parameters<HttpFn>) => ReturnType<HttpFn>
-const { httpMock } = vi.hoisted(() => ({ httpMock: vi.fn<HttpMockFn>() }))
+const httpMock = vi.fn<HttpFn>()
 
-vi.mock(
-  '@services/httpClient',
-  () =>
-    ({
-      http: httpMock,
-    }) satisfies { http: HttpFn },
-)
+vi.mock('@services/httpClient', () => ({
+  http: httpMock,
+}))
 
 describe('chatApi', () => {
   beforeEach(() => {

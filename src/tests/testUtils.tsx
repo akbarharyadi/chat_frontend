@@ -34,7 +34,7 @@ export const renderWithProviders = (
 ) => {
   const queryClient = options?.queryClient ?? createTestQueryClient()
 
-  const Wrapper = ({ children }: PropsWithChildren): JSX.Element => (
+  const Wrapper = ({ children }: PropsWithChildren): ReactElement => (
     <MantineProvider>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </MantineProvider>

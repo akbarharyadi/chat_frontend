@@ -6,13 +6,26 @@ import { useChatRoom } from '@features/chat/hooks/useChatRoom'
 import type { ChatMessage } from '@features/chat/types'
 import type { ChatMessageDto } from '@services/chatApi'
 import { createTestQueryClient } from '@tests/testUtils'
-import type { chatApi as ChatApi } from '@services/chatApi'
-import type { subscribeToChatroom as SubscribeToChatroomFn } from '@services/chatRealtime'
 import type { ReactNode } from 'react'
 
-type ListMessagesFn = ChatApi['listMessages']
-type CreateMessageFn = ChatApi['createMessage']
-type SubscribeToChatroomMock = SubscribeToChatroomFn
+type ListMessagesFn = (chatroomId: number) => Promise<ChatMessageDto[]>
+type CreateMessageFn = (
+  chatroomId: number,
+  payload: {
+    message: { body: string; user_name: string; user_uid: string }
+  },
+) => Promise<ChatMessageDto>
+type SubscriptionCleanup = () => void
+interface SubscriptionHandlers {
+  onConnected?: () => void
+  onDisconnected?: () => void
+  onMessage?: (dto: ChatMessageDto) => void
+  onError?: (error: unknown) => void
+}
+type SubscribeToChatroomMock = (
+  chatroomId: number,
+  handlers: SubscriptionHandlers,
+) => SubscriptionCleanup
 
 const { listMessagesMock, createMessageMock, subscribeToChatroomMock } = vi.hoisted(
   () => ({
@@ -21,11 +34,7 @@ const { listMessagesMock, createMessageMock, subscribeToChatroomMock } = vi.hois
     subscribeToChatroomMock: vi.fn<SubscribeToChatroomMock>(),
   }),
 )
-let subscriptionHandlers:
-  | {
-      onMessage?: (dto: ChatMessageDto) => void
-    }
-  | undefined
+let subscriptionHandlers: SubscriptionHandlers | undefined
 
 vi.mock(
   '@services/chatApi',
@@ -40,13 +49,9 @@ vi.mock(
     },
 )
 
-vi.mock(
-  '@services/chatRealtime',
-  () =>
-    ({
-      subscribeToChatroom: subscribeToChatroomMock,
-    }) satisfies { subscribeToChatroom: SubscribeToChatroomFn },
-)
+vi.mock('@services/chatRealtime', () => ({
+  subscribeToChatroom: subscribeToChatroomMock,
+}))
 
 const renderUseChatRoom = (chatroomId: number | null) => {
   const queryClient = createTestQueryClient()

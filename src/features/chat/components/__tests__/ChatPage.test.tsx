@@ -4,7 +4,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ChatMessagesPanelProps } from '@features/chat/components/ChatMessagesPanel'
 import type { ChatSidebarPanelProps } from '@features/chat/components/ChatSidebarPanel'
 import type { ChatCreateModalProps } from '@features/chat/components/ChatCreateModal'
+import type { ChatMobileSettingsDrawerProps } from '@features/chat/components/ChatMobileSettingsDrawer'
 import type { Chatroom, ChatMessage } from '@features/chat/types'
+import type { ChatroomDto } from '@services/chatApi'
 
 let latestMessagesPanelProps: ChatMessagesPanelProps | undefined
 const chatMessagesPanelMock = vi.fn((props: ChatMessagesPanelProps) => {
@@ -18,7 +20,7 @@ const chatSidebarPanelMock = vi.fn((props: ChatSidebarPanelProps) => {
   return <div data-testid="chat-sidebar-panel" />
 })
 
-const chatMobileSettingsDrawerMock = vi.fn(() => (
+const chatMobileSettingsDrawerMock = vi.fn((_props: ChatMobileSettingsDrawerProps) => (
   <div data-testid="chat-mobile-settings-drawer" />
 ))
 
@@ -109,10 +111,7 @@ const baseChatrooms: Chatroom[] = [
   },
 ]
 
-const createChatroomMock = vi.fn<
-  Promise<{ id: number; name: string; created_at?: string; updated_at?: string }>,
-  [string]
->()
+const createChatroomMock = vi.fn<(name: string) => Promise<ChatroomDto>>()
 const sendMessageAsyncMock = vi.fn().mockResolvedValue(undefined)
 const retryMessageMock = vi.fn()
 const sendMessageMock = vi.fn()

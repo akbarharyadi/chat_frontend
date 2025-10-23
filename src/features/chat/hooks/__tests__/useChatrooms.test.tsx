@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { MantineProvider } from '@mantine/core'
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren, ReactElement } from 'react'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 
 import { useChatrooms } from '@features/chat/hooks/useChatrooms'
@@ -25,7 +25,7 @@ const mockedChatApi = vi.mocked(chatApi)
  * Provide Mantine + react-query context for the hooks under test.
  */
 const buildWrapper = (queryClient = createTestQueryClient()) => {
-  const Wrapper = ({ children }: PropsWithChildren): JSX.Element => (
+  const Wrapper = ({ children }: PropsWithChildren): ReactElement => (
     <MantineProvider>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </MantineProvider>

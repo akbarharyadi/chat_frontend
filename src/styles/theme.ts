@@ -9,10 +9,10 @@ export const theme = createTheme({
     fontFamily: 'inherit',
     fontWeight: '600',
     sizes: {
-      h1: { fontSize: rem(32), lineHeight: 1.2 },
-      h2: { fontSize: rem(26), lineHeight: 1.25 },
-      h3: { fontSize: rem(22), lineHeight: 1.3 },
-      h4: { fontSize: rem(20), lineHeight: 1.35 },
+      h1: { fontSize: rem(32), lineHeight: '1.2' },
+      h2: { fontSize: rem(26), lineHeight: '1.25' },
+      h3: { fontSize: rem(22), lineHeight: '1.3' },
+      h4: { fontSize: rem(20), lineHeight: '1.35' },
     },
   },
   components: {
