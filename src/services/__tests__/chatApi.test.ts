@@ -1,10 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { chatApi } from '@services/chatApi'
-import type { http as HttpFn } from '@services/httpClient'
+import type { HttpRequestOptions } from '@services/httpClient'
+
+type HttpMock = <TResponse, TBody = unknown>(
+  path: string,
+  options?: HttpRequestOptions<TBody>,
+) => Promise<TResponse>
 
 const { httpMock } = vi.hoisted(() => ({
-  httpMock: vi.fn<HttpFn>(),
+  httpMock: vi.fn<HttpMock>(),
 }))
 
 vi.mock('@services/httpClient', () => ({
