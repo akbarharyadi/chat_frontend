@@ -1,6 +1,8 @@
 import { memo, useMemo } from 'react'
+import type { ReactNode } from 'react'
 
 import {
+  Anchor,
   ActionIcon,
   Avatar,
   Badge,
@@ -52,6 +54,60 @@ export const ChatMessageItem = memo(
     const radius = isOwnMessage ? bubbleRadius.own : bubbleRadius.other
     const theme = useMantineTheme()
     const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true })
+
+    const linkifiedBody = useMemo<ReactNode>(() => {
+      const urlRegex = /(https?:\/\/[^\s]+)/gi
+      const trailingPunctuationRegex = /[),.;!?]+$/
+      const nodes: ReactNode[] = []
+      let lastIndex = 0
+      let match: RegExpExecArray | null
+
+      while ((match = urlRegex.exec(message.body)) !== null) {
+        const matchStart = match.index
+
+        if (matchStart > lastIndex) {
+          nodes.push(message.body.slice(lastIndex, matchStart))
+        }
+
+        let url = match[0]
+        let trailingPunctuation = ''
+
+        const punctuationMatch = trailingPunctuationRegex.exec(url)
+        if (punctuationMatch) {
+          trailingPunctuation = punctuationMatch[0]
+          url = url.slice(0, -trailingPunctuation.length)
+        }
+
+        nodes.push(
+          <Anchor
+            key={`chat-link-${url}-${matchStart}`}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="sm"
+            className="chat-message-link"
+          >
+            {url}
+          </Anchor>,
+        )
+
+        if (trailingPunctuation) {
+          nodes.push(trailingPunctuation)
+        }
+
+        lastIndex = urlRegex.lastIndex
+      }
+
+      if (lastIndex === 0) {
+        return message.body
+      }
+
+      if (lastIndex < message.body.length) {
+        nodes.push(message.body.slice(lastIndex))
+      }
+
+      return nodes
+    }, [message.body])
 
     const bubbleStyles = useMemo(() => {
       if (message.isSystem) {
@@ -136,7 +192,7 @@ export const ChatMessageItem = memo(
               size="sm"
               ff="var(--mantine-font-family)"
             >
-              {message.body}
+              {linkifiedBody}
             </Text>
 
             <Text

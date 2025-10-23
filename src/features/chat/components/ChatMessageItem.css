@@ -28,6 +28,16 @@
   transition: transform 120ms ease;
 }
 
+.chat-message-link {
+  color: inherit;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.chat-message-link:hover {
+  text-decoration: underline;
+}
+
 .chat-message-bubble:hover {
   transform: translateY(-1px);
 }
