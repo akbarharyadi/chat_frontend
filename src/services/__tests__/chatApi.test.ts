@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { chatApi } from '@services/chatApi'
 import type { http as HttpFn } from '@services/httpClient'
 
-const httpMock = vi.fn<HttpFn>()
+const { httpMock } = vi.hoisted(() => ({
+  httpMock: vi.fn<HttpFn>(),
+}))
 
 vi.mock('@services/httpClient', () => ({
   http: httpMock,
