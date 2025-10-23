@@ -68,15 +68,6 @@ export const ChatMessageItem = memo(
         }
       }
 
-      if (isOwnMessage) {
-        return {
-          background: `linear-gradient(135deg, ${theme.colors.indigo[5]} 0%, ${theme.colors.violet[5]} 100%)`,
-          color: theme.white,
-          border: 'none',
-          shadow: theme.shadows.sm,
-        }
-      }
-
       return {
         background: colorScheme === 'dark' ? theme.colors.dark[4] : theme.white,
         color: colorScheme === 'dark' ? theme.colors.gray[1] : theme.colors.dark[7],
@@ -86,7 +77,7 @@ export const ChatMessageItem = memo(
             ? theme.shadows.xs
             : '0 10px 28px rgba(15, 23, 42, 0.06)',
       }
-    }, [colorScheme, isOwnMessage, message.isSystem, theme])
+    }, [colorScheme, message.isSystem, theme])
 
     return (
       <Group
@@ -122,7 +113,7 @@ export const ChatMessageItem = memo(
           )}
 
           <Paper
-            shadow={isOwnMessage ? 'md' : 'xs'}
+            shadow={isOwnMessage ? 'xs' : 'xs'}
             radius={radius}
             px="md"
             py="sm"
@@ -209,7 +200,11 @@ export const ChatMessageItem = memo(
             radius="xl"
             size={52}
             variant="gradient"
-            gradient={{ from: theme.colors.dark[4], to: theme.colors.dark[7], deg: 140 }}
+            gradient={{
+              from: theme.colors.violet[5],
+              to: theme.colors.cyan[4],
+              deg: 135,
+            }}
             className="chat-message-avatar"
             aria-label={`${message.userName} avatar`}
           >
