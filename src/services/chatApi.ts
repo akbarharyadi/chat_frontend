@@ -35,21 +35,41 @@ export interface CreateMessageRequest {
  * Thin API client for interacting with chatroom and message endpoints.
  */
 export const chatApi = {
-  // Fetch all available chatrooms.
+  /**
+   * Fetch all available chatrooms.
+   *
+   * @returns Promise that resolves with the chatroom DTO collection.
+   */
   listChatrooms: () => http<ChatroomDto[]>('/chatrooms'),
 
-  // Create a new chatroom with the provided payload.
+  /**
+   * Create a new chatroom with the provided payload.
+   *
+   * @param payload - Request body containing the chatroom name.
+   * @returns Promise that resolves with the created chatroom DTO.
+   */
   createChatroom: (payload: CreateChatroomRequest) =>
     http<ChatroomDto>('/chatrooms', {
       method: 'POST',
       body: payload,
     }),
 
-  // Retrieve message history for the requested chatroom.
+  /**
+   * Retrieve message history for the requested chatroom.
+   *
+   * @param chatroomId - Identifier of the chatroom to fetch messages for.
+   * @returns Promise resolving with ordered message DTOs.
+   */
   listMessages: (chatroomId: number) =>
     http<ChatMessageDto[]>(`/chatrooms/${chatroomId}/messages`),
 
-  // Post a chat message to the backend for realtime distribution.
+  /**
+   * Post a chat message to the backend for realtime distribution.
+   *
+   * @param chatroomId - Chatroom receiving the new message.
+   * @param payload - Request body containing the message metadata.
+   * @returns Promise resolving with the saved message DTO.
+   */
   createMessage: (chatroomId: number, payload: CreateMessageRequest) =>
     http<ChatMessageDto>(`/chatrooms/${chatroomId}/messages`, {
       method: 'POST',

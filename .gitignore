@@ -27,3 +27,4 @@ dist-ssr
 plan/
 frontend_integration.md
 .env
+coverage/*

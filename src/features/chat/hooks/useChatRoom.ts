@@ -29,7 +29,11 @@ interface MessageMutationContext {
   optimisticId: string
 }
 
-// Generate a unique identifier for optimistic message placeholders.
+/**
+ * Generate a unique identifier for optimistic message placeholders.
+ *
+ * @returns Unique optimistic message identifier.
+ */
 const createOptimisticId = () => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return `optimistic-${crypto.randomUUID()}`
@@ -37,14 +41,29 @@ const createOptimisticId = () => {
   return `optimistic-${Math.random().toString(36).slice(2, 11)}`
 }
 
-// Compose the react-query key for message collections.
+/**
+ * Compose the react-query key for message collections.
+ *
+ * @param chatroomId - Room identifier used to namespace the query cache.
+ * @returns Stable query key tuple.
+ */
 const messagesQueryKey = (chatroomId: number) =>
   ['chatrooms', chatroomId, 'messages'] as const
 
-// Convert a server DTO to the UI-friendly message shape.
+/**
+ * Convert a server DTO to the UI-friendly message shape.
+ *
+ * @param dto - Chat message data transfer object from the API.
+ * @returns Normalised message structure for the UI.
+ */
 const toMessage = (dto: ChatMessageDto): ChatMessage => mapMessageDto(dto)
 
-// Normalise any error object into a human-friendly string.
+/**
+ * Normalise any error object into a human-friendly string.
+ *
+ * @param error - Unknown error value from network/query layers.
+ * @returns Readable error message where possible.
+ */
 const extractErrorMessage = (error: unknown) => {
   if (error instanceof HttpError) {
     return error.message
@@ -58,6 +77,9 @@ const extractErrorMessage = (error: unknown) => {
 /**
  * Hook that streams chat messages for a room, handles optimistic sends,
  * and exposes connection status metadata.
+ *
+ * @param chatroomId - Currently active chatroom identifier, or null if none selected.
+ * @returns Aggregated chatroom state, helpers and status metadata.
  */
 export const useChatRoom = (chatroomId: number | null): UseChatRoomResult => {
   const queryClient = useQueryClient()

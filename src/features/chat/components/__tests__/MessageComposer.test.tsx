@@ -40,6 +40,7 @@ describe('MessageComposer', () => {
 
   it('restores the draft if sending fails', async () => {
     const handleSend = vi.fn().mockRejectedValue(new Error('boom'))
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
     const user = userEvent.setup()
 
     renderWithProviders(<MessageComposer onSend={handleSend} />)
@@ -50,5 +51,7 @@ describe('MessageComposer', () => {
 
     expect(handleSend).toHaveBeenCalledWith('retry me')
     expect(textarea).toHaveValue('retry me')
+
+    consoleErrorSpy.mockRestore()
   })
 })

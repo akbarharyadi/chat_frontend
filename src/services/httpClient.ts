@@ -40,6 +40,11 @@ const isHttpErrorPayload = (value: unknown): value is HttpErrorPayload =>
 
 /**
  * Minimal fetch wrapper that prefixes the chat base URL and normalises errors.
+ *
+ * @param path - Relative API path, e.g. `/chatrooms`.
+ * @param options - Optional HTTP configuration such as method, body, headers and signal.
+ * @returns Parsed JSON payload typed as `TResponse`.
+ * @throws HttpError when the response is not successful.
  */
 export async function http<TResponse, TBody = unknown>(
   path: string,

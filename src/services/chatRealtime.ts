@@ -13,11 +13,18 @@ interface SubscriptionHandlers {
   onError?: (error: unknown) => void
 }
 
+/**
+ * Cleanup callback returned to consumers for tearing down the subscription.
+ */
 type SubscriptionCleanup = () => void
 
 let consumer: ReturnType<typeof createConsumer> | null = null
 
-// Lazily instantiate a single Action Cable consumer tied to the configured URL.
+/**
+ * Lazily instantiate a single Action Cable consumer tied to the configured URL.
+ *
+ * @returns Shared Action Cable consumer instance.
+ */
 const getConsumer = () => {
   consumer ??= createConsumer(env.chatWsUrl)
   return consumer
@@ -25,6 +32,10 @@ const getConsumer = () => {
 
 /**
  * Subscribe to the backend ChatroomChannel and relay messages through typed handlers.
+ *
+ * @param chatroomId - Server-side identifier for the chatroom subscription.
+ * @param handlers - Callback map invoked as the Action Cable lifecycle progresses.
+ * @returns Cleanup function that unsubscribes from the channel.
  */
 export const subscribeToChatroom = (
   chatroomId: number,

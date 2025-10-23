@@ -14,6 +14,12 @@ export interface MessageListProps {
 
 /**
  * Scrollable container that renders chat messages and maintains scroll-to-bottom behavior.
+ *
+ * @param props.messages - Collection of chat messages to render.
+ * @param props.currentUserUid - Identifier of the current user for alignment decisions.
+ * @param props.onRetry - Optional callback fired when retrying failed messages.
+ * @param props.isLoading - Whether the message feed is currently loading.
+ * @returns Scroll area containing the message history.
  */
 export const MessageList = ({
   messages,

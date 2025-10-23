@@ -18,11 +18,15 @@ interface UseChatroomsResult {
   creationError: HttpError | null
 }
 
-// Shared query key for chatroom list operations.
+/**
+ * Shared query key for chatroom list operations.
+ */
 const chatroomsQueryKey = ['chatrooms']
 
 /**
  * Manages chatroom collection retrieval and creation flow using react-query.
+ *
+ * @returns Chatroom list state plus helpers for creation and refetching.
  */
 export const useChatrooms = (): UseChatroomsResult => {
   const queryClient = useQueryClient()

@@ -10,8 +10,9 @@ import {
   Stack,
   Text,
   Tooltip,
+  useComputedColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
-import { useMantineTheme } from '@mantine/core'
 import { IconAlertTriangle, IconRotateClockwise } from '@tabler/icons-react'
 
 import type { ChatMessage } from '@features/chat/types'
@@ -31,12 +32,17 @@ const statusLabel: Record<ChatMessage['status'], string> = {
 
 // Adjust bubble corners to visually differentiate own messages from others.
 const bubbleRadius = {
-  own: { topLeft: 'lg', topRight: 'xs', bottomLeft: 'lg', bottomRight: 'lg' } as const,
-  other: { topLeft: 'xs', topRight: 'lg', bottomLeft: 'lg', bottomRight: 'lg' } as const,
+  own: 'lg',
+  other: 'xs',
 }
 
 /**
  * Renders an individual chat message with author info, status, and retry affordances.
+ *
+ * @param props.message - Chat message model to display.
+ * @param props.isOwnMessage - Flags whether the message belongs to the current user.
+ * @param props.onRetry - Optional handler invoked when retrying failed messages.
+ * @returns Memoised message row element.
  */
 
 export const ChatMessageItem = memo(
@@ -44,18 +50,18 @@ export const ChatMessageItem = memo(
     const alignment = isOwnMessage ? 'flex-end' : 'flex-start'
     const radius = isOwnMessage ? bubbleRadius.own : bubbleRadius.other
     const theme = useMantineTheme()
+    const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true })
 
     const bubbleStyles = useMemo(() => {
       if (message.isSystem) {
         return {
           background:
-            theme.colorScheme === 'dark'
+            colorScheme === 'dark'
               ? 'rgba(255, 255, 255, 0.06)'
               : 'rgba(17, 24, 39, 0.06)',
-          color:
-            theme.colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[6],
+          color: colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[6],
           border: `1px dashed ${
-            theme.colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[3]
+            colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[3]
           }`,
           shadow: theme.shadows.xs,
         }
@@ -71,13 +77,12 @@ export const ChatMessageItem = memo(
       }
 
       return {
-        background:
-          theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
-        color: theme.colorScheme === 'dark' ? theme.colors.gray[0] : theme.colors.dark[7],
-        border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+        background: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0],
+        color: colorScheme === 'dark' ? theme.colors.gray[0] : theme.colors.dark[7],
+        border: `1px solid ${colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
         shadow: theme.shadows.xs,
       }
-    }, [isOwnMessage, message.isSystem, theme])
+    }, [colorScheme, isOwnMessage, message.isSystem, theme])
 
     return (
       <Group

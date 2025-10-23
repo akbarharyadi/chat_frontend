@@ -12,6 +12,11 @@ export interface MessageComposerProps {
 
 /**
  * Chat input allowing users to draft multi-line content and submit via button or Enter key.
+ *
+ * @param props.onSend - Async handler invoked with the finalised message body.
+ * @param props.isSending - Toggles loading state on the send button.
+ * @param props.disabled - Disables input controls, typically when offline.
+ * @returns Controlled message composer form element.
  */
 export const MessageComposer = ({
   onSend,

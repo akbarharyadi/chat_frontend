@@ -29,6 +29,9 @@ export interface ConnectionStatusBadgeProps {
 
 /**
  * Displays the current realtime connection state with contextual tooltip.
+ *
+ * @param props.status - Connection lifecycle stage for the realtime websocket.
+ * @returns Status badge with short label and descriptive tooltip.
  */
 export const ConnectionStatusBadge = ({ status }: ConnectionStatusBadgeProps) => {
   const config = statusConfig[status]
