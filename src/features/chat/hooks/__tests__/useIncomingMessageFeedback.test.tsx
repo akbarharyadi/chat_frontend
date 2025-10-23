@@ -6,6 +6,9 @@ import type { UseIncomingMessageFeedbackOptions } from '../useIncomingMessageFee
 
 type UseIncomingMessageFeedbackHook = (options: UseIncomingMessageFeedbackOptions) => void
 
+/**
+ * Lightweight stand-in for the Web Audio GainNode so we can assert on connection logic.
+ */
 class FakeGainNode {
   connect = vi.fn()
   disconnect = vi.fn()
@@ -15,6 +18,9 @@ class FakeGainNode {
   }
 }
 
+/**
+ * Minimal oscillator mock that mirrors the shape of the real API while exposing spies.
+ */
 class FakeOscillator {
   type = 'sine'
   frequency = {
@@ -31,6 +37,10 @@ class FakeOscillator {
   onended: (() => void) | null = null
 }
 
+/**
+ * Fake AudioContext that records created oscillators/gains, allowing the hook to exercise
+ * the same flow it would in the browser.
+ */
 class FakeAudioContext {
   currentTime = 0
   state: 'running' | 'suspended' | 'closed' = 'running'
@@ -62,6 +72,10 @@ const originalWebkitAudioContext = (
   globalThis as { webkitAudioContext?: typeof AudioContext }
 ).webkitAudioContext
 
+/**
+ * Generate a representative chat message for the tests, allowing targeted overrides for
+ * individual fields without having to repeat the full shape inline.
+ */
 const createMessage = (overrides: Partial<ChatMessage> = {}): ChatMessage => ({
   id: overrides.id ?? `msg-${Math.random().toString(36).slice(2)}`,
   chatroomId: overrides.chatroomId ?? 1,
@@ -146,16 +160,16 @@ describe('useIncomingMessageFeedback', () => {
       body: 'my text',
     })
 
-    const { rerender } = renderHook<
-      UseIncomingMessageFeedbackOptions,
-      ReturnType<UseIncomingMessageFeedbackHook>
-    >((props) => useIncomingMessageFeedback(props), {
-      initialProps: {
-        messages: [],
-        activeChatroomId: 7,
-        currentUserUid: 'current-user',
+    const { rerender } = renderHook<void, UseIncomingMessageFeedbackOptions>(
+      (props) => useIncomingMessageFeedback(props),
+      {
+        initialProps: {
+          messages: [],
+          activeChatroomId: 7,
+          currentUserUid: 'current-user',
+        },
       },
-    })
+    )
 
     rerender({
       messages: [initialMessage],
@@ -200,16 +214,16 @@ describe('useIncomingMessageFeedback', () => {
     const roomBFirst = createMessage({ id: 'b-1', chatroomId: 9, userUid: 'other-3' })
     const roomBSecond = createMessage({ id: 'b-2', chatroomId: 9, userUid: 'other-4' })
 
-    const { rerender } = renderHook<
-      UseIncomingMessageFeedbackOptions,
-      ReturnType<UseIncomingMessageFeedbackHook>
-    >((props) => useIncomingMessageFeedback(props), {
-      initialProps: {
-        messages: [],
-        activeChatroomId: 2,
-        currentUserUid: 'me',
+    const { rerender } = renderHook<void, UseIncomingMessageFeedbackOptions>(
+      (props) => useIncomingMessageFeedback(props),
+      {
+        initialProps: {
+          messages: [],
+          activeChatroomId: 2,
+          currentUserUid: 'me',
+        },
       },
-    })
+    )
 
     rerender({
       messages: [roomAFirst],
